@@ -1,0 +1,2608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRIL | Bhratha Rural–Urban Skill Exchange</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --black: #080808;
+      --black2: #111111;
+      --black3: #1a1a1a;
+      --white: #f5f0e8;
+      --orange: #E8630A;
+      --orange-glow: rgba(232, 99, 10, 0.15);
+      --green: #1DB954;
+      --green-glow: rgba(29, 185, 84, 0.15);
+      --gold: #C9A84C;
+      --gold-glow: rgba(201, 168, 76, 0.12);
+      --blue: #2E86FF;
+      --blue-glow: rgba(46, 134, 255, 0.15);
+      --rural: #3DA64A;
+      --urban: #2E86FF;
+      --border: rgba(255,255,255,0.07);
+      --text-dim: rgba(245, 240, 232, 0.45);
+      --text-mid: rgba(245, 240, 232, 0.7);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Crimson Pro', serif;
+      font-size: 17px;
+      overflow-x: hidden;
+    }
+
+    /* === GRAIN OVERLAY === */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    h1, h2, h3, h4, .nav-logo { font-family: 'Syne', sans-serif; }
+
+    /* === SCROLLBAR === */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--black2); }
+    ::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 3px; }
+
+    /* =================== NAV =================== */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, #C9A84C, #FFD700, #C9A84C);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+
+    .nav-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .nav-tag.rural-tag { background: rgba(61, 166, 74, 0.15); color: var(--rural); border: 1px solid rgba(61,166,74,0.3); }
+    .nav-tag.urban-tag { background: rgba(46, 134, 255, 0.15); color: var(--urban); border: 1px solid rgba(46,134,255,0.3); }
+
+    .btn-nav {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 8px 20px;
+      border: 1px solid var(--orange);
+      background: transparent;
+      color: var(--orange);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-transform: uppercase;
+    }
+    .btn-nav:hover { background: var(--orange); color: var(--black); }
+
+    /* =================== HERO =================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .hero-split {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      pointer-events: none;
+    }
+
+    .hero-split-left {
+      width: 50%;
+      background: radial-gradient(ellipse at left center, rgba(61,166,74,0.06) 0%, transparent 70%);
+    }
+
+    .hero-split-right {
+      width: 50%;
+      background: radial-gradient(ellipse at right center, rgba(46,134,255,0.06) 0%, transparent 70%);
+    }
+
+    .hero-divider-line {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.3), transparent);
+      pointer-events: none;
+    }
+
+    .hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 4px;
+      color: var(--gold);
+      opacity: 0.6;
+      margin-bottom: 28px;
+      text-transform: uppercase;
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 800;
+      letter-spacing: 10px;
+      line-height: 1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #7A5C1E 0%, #C9A84C 35%, #FFD700 55%, #C9A84C 75%, #7A5C1E 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-fullname {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+      letter-spacing: 4px;
+      color: var(--gold);
+      opacity: 0.7;
+      margin-bottom: 36px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-style: italic;
+      color: var(--text-mid);
+      max-width: 640px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-sub {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      margin-bottom: 48px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-duality {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 52px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+    }
+
+    .duality-pill {
+      padding: 10px 28px;
+      border-radius: 40px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .duality-pill.rural {
+      background: rgba(61,166,74,0.1);
+      border: 1px solid rgba(61,166,74,0.4);
+      color: var(--rural);
+    }
+
+    .duality-pill.urban {
+      background: rgba(46,134,255,0.1);
+      border: 1px solid rgba(46,134,255,0.4);
+      color: var(--urban);
+    }
+
+    .duality-arrow {
+      color: var(--gold);
+      font-size: 1.2rem;
+      opacity: 0.6;
+    }
+
+    .hero-cta { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+
+    .btn-primary {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 14px 36px;
+      background: var(--orange);
+      color: var(--black);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(232,99,10,0.3); }
+
+    .btn-ghost {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 14px 36px;
+      background: transparent;
+      color: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+    .btn-secondary {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 12px 28px;
+      background: transparent;
+      color: var(--orange);
+      border: 1px solid var(--orange);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-secondary:hover { background: var(--orange-glow); }
+
+    /* === HERO STATS BAR === */
+    .hero-stats {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-stat {
+      padding: 20px 36px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+      flex: 1;
+    }
+    .hero-stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--gold);
+      display: block;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    /* =================== APP SHELL (Post Auth) =================== */
+    #app-shell {
+      display: none;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* === SIDEBAR === */
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--black2);
+      border-right: 1px solid var(--border);
+      padding: 28px 0;
+      position: sticky;
+      top: 60px;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
+    }
+
+    .sidebar-user {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .user-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--black3);
+      border: 2px solid var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+
+    .user-name-s {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .user-type-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    .rural-badge { background: rgba(61,166,74,0.15); color: var(--rural); border: 1px solid rgba(61,166,74,0.3); }
+    .urban-badge { background: rgba(46,134,255,0.15); color: var(--urban); border: 1px solid rgba(46,134,255,0.3); }
+
+    .sidebar-nav { list-style: none; }
+
+    .sidebar-nav li { }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-nav a:hover { color: var(--white); background: rgba(255,255,255,0.03); }
+    .sidebar-nav a.active { color: var(--orange); border-left-color: var(--orange); background: var(--orange-glow); }
+    .sidebar-nav a i { width: 18px; text-align: center; font-size: 0.85rem; }
+
+    .sidebar-section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      padding: 16px 20px 6px;
+      text-transform: uppercase;
+    }
+
+    /* === MAIN CONTENT === */
+    .main-content {
+      flex: 1;
+      padding: 36px;
+      max-width: calc(100% - 220px);
+    }
+
+    .section-page { display: none; animation: fadeUp 0.4s ease; }
+    .section-page.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =================== COMMON COMPONENTS =================== */
+    .page-header {
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .page-sub {
+      color: var(--text-dim);
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+
+    .card:hover { border-color: rgba(232,99,10,0.25); }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--orange);
+      letter-spacing: 0.5px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    .stat-card {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-card-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--green);
+      display: block;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-card-lbl {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 1.5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .badge-orange { background: var(--orange-glow); color: var(--orange); border: 1px solid rgba(232,99,10,0.3); }
+    .badge-green { background: var(--green-glow); color: var(--green); border: 1px solid rgba(29,185,84,0.3); }
+    .badge-blue { background: var(--blue-glow); color: var(--blue); border: 1px solid rgba(46,134,255,0.3); }
+    .badge-gold { background: var(--gold-glow); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+
+    .progress-track {
+      background: var(--black3);
+      border-radius: 3px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--orange), var(--green));
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+
+    /* =================== DASHBOARD =================== */
+    .bril-score-ring {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(var(--orange) 0deg, var(--green) 180deg, var(--border) 180deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      position: relative;
+    }
+
+    .bril-score-inner {
+      width: 78px; height: 78px;
+      border-radius: 50%;
+      background: var(--black2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bril-score-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .bril-score-lbl {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .activity-item:last-child { border-bottom: none; }
+
+    .activity-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--orange);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    /* =================== SKILL EXCHANGE =================== */
+    .skill-filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-select {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 9px 14px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .filter-select:focus { border-color: var(--orange); }
+
+    .filter-toggle {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .filter-toggle-btn {
+      padding: 9px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      background: transparent;
+      color: var(--text-dim);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-toggle-btn.active { background: var(--orange); color: var(--black); }
+
+    .skill-card {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--orange);
+    }
+
+    .skill-card.rural-skill::before { background: var(--rural); }
+    .skill-card.urban-skill::before { background: var(--urban); }
+    .skill-card.volunteer-skill { border-style: dashed; }
+
+    .skill-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+
+    .skill-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .skill-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+
+    .skill-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+
+    .skill-desc { color: var(--text-mid); font-size: 0.9rem; line-height: 1.6; margin-bottom: 14px; }
+
+    .skill-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .skill-price {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--green);
+    }
+
+    .skill-price.volunteer { color: var(--gold); }
+
+    .skill-info-row {
+      display: flex;
+      gap: 16px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+    }
+
+    .skill-info-item { display: flex; align-items: center; gap: 5px; }
+
+    /* =================== EVALUATION =================== */
+    .eval-tabs {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .eval-tab {
+      flex: 1;
+      padding: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-align: center;
+      background: transparent;
+      color: var(--text-dim);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-right: 1px solid var(--border);
+      text-transform: uppercase;
+    }
+
+    .eval-tab:last-child { border-right: none; }
+    .eval-tab.active { background: var(--orange); color: var(--black); }
+
+    .question-card {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-left: 4px solid transparent;
+      border-radius: 6px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .question-card:hover { border-left-color: var(--orange); background: rgba(232,99,10,0.04); }
+    .question-card.selected { border-left-color: var(--orange); background: var(--orange-glow); }
+
+    .q-text { font-size: 0.95rem; margin-bottom: 12px; line-height: 1.5; }
+
+    .q-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .q-option {
+      padding: 8px 14px;
+      background: var(--black3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-mid);
+    }
+
+    .q-option:hover { border-color: var(--orange); color: var(--white); }
+    .q-option.selected-opt { background: var(--orange-glow); border-color: var(--orange); color: var(--orange); }
+
+    .eval-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .timer-box {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      color: var(--orange);
+      background: var(--orange-glow);
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(232,99,10,0.3);
+    }
+
+    /* =================== FORMS =================== */
+    .form-group { margin-bottom: 18px; }
+
+    .form-label {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--black3);
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 12px 14px;
+      border-radius: 4px;
+      font-family: 'Crimson Pro', serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px var(--orange-glow); }
+    .form-input::placeholder { color: var(--text-dim); }
+
+    .form-input select, select.form-input {
+      appearance: none;
+      cursor: pointer;
+    }
+
+    /* =================== MODAL =================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal-box {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 40px;
+      width: 90%;
+      max-width: 480px;
+      max-height: 88vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.open .modal-box { transform: translateY(0); }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover { color: var(--white); }
+
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .modal-sub {
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      margin-bottom: 28px;
+      font-style: italic;
+    }
+
+    /* === AADHAR VERIFIED === */
+    .aadhar-step {
+      padding: 16px;
+      background: var(--black3);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+
+    .aadhar-step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .step-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--orange);
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+
+    .step-label {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    /* Pincode rural/urban detection */
+    .pincode-result {
+      display: none;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+    }
+
+    .pincode-rural { background: rgba(61,166,74,0.1); color: var(--rural); border: 1px solid rgba(61,166,74,0.3); }
+    .pincode-urban { background: rgba(46,134,255,0.1); color: var(--urban); border: 1px solid rgba(46,134,255,0.3); }
+
+    /* === OTP === */
+    .otp-boxes {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .otp-box {
+      width: 48px; height: 52px;
+      background: var(--black3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--white);
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.3rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .otp-box:focus { border-color: var(--orange); }
+
+    /* === CHECKBOX === */
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .check-box {
+      width: 18px; height: 18px;
+      border: 1px solid var(--orange);
+      border-radius: 3px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      transition: background 0.2s;
+    }
+
+    .check-box.checked { background: var(--orange); }
+    .check-box.checked::after { content: '✓'; color: var(--black); font-size: 11px; font-weight: 800; }
+    .check-label { font-size: 0.85rem; color: var(--text-mid); line-height: 1.5; }
+
+    /* =================== SUCCESS TOAST =================== */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--black2);
+      border: 1px solid var(--green);
+      border-left: 4px solid var(--green);
+      border-radius: 6px;
+      padding: 16px 22px;
+      z-index: 2000;
+      transform: translateX(140%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 320px;
+    }
+
+    .toast.show { transform: translateX(0); }
+
+    .toast-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 4px;
+    }
+
+    .toast-msg { font-size: 0.82rem; color: var(--text-mid); }
+
+    /* =================== FOUNDATION =================== */
+    .zero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .zero-card {
+      background: var(--black3);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 6px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .zero-word {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #C9A84C, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .zero-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+    }
+
+    /* =================== FLOW LINE =================== */
+    .flow-line {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--rural), var(--gold), var(--urban), transparent);
+      margin: 28px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flow-line::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -40px;
+      width: 40px; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      animation: flowPulse 2.5s linear infinite;
+    }
+
+    @keyframes flowPulse {
+      0% { left: -40px; }
+      100% { left: calc(100% + 40px); }
+    }
+
+    /* =================== PROFILE =================== */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 28px;
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 24px;
+    }
+
+    .profile-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--black3);
+      border: 3px solid var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .skill-tag {
+      display: inline-block;
+      padding: 5px 12px;
+      background: var(--black3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 1px;
+      color: var(--text-mid);
+      margin: 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { max-width: 100%; padding: 20px; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .hero-stats { flex-direction: column; }
+      .q-options { grid-template-columns: 1fr; }
+    }
+
+    /* === INTRO SCREEN === */
+    #intro-screen { display: block; }
+    #pre-auth { display: block; }
+
+    /* === NAV SCROLL EFFECT === */
+    .nav-scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.5); }
+  </style>
+</head>
+
+<body>
+
+<!-- =================== NAVIGATION =================== -->
+<nav id="main-nav">
+  <div class="nav-logo">BRIL</div>
+  <div class="nav-right">
+    <span class="nav-tag" id="user-type-nav"></span>
+    <button class="btn-nav" id="auth-btn" onclick="openAuthModal()">Join / Sign In</button>
+    <button class="btn-nav" id="logout-btn" onclick="logout()" style="display:none;">Logout</button>
+  </div>
+</nav>
+
+<!-- =================== PRE-AUTH (HERO) =================== -->
+<div id="pre-auth">
+  <section class="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-split">
+      <div class="hero-split-left"></div>
+      <div class="hero-split-right"></div>
+    </div>
+    <div class="hero-divider-line"></div>
+
+    <div class="hero-label">Bhratha Rural Incubation Limited · Powered by IPNOTEC</div>
+
+    <div class="hero-title">BRIL</div>
+
+    <div class="hero-fullname">BHRATHA RURAL–URBAN SKILL EXCHANGE PLATFORM</div>
+
+    <p class="hero-tagline">
+      "The farmer who understands IoT. The software engineer who understands the soil.<br>That is the India BRIL is building."
+    </p>
+
+    <div class="hero-sub">AADHAAR VERIFIED · PINCODE ROOTED · SKILL FORWARD</div>
+
+    <div class="hero-duality">
+      <div class="duality-pill rural">
+        <i class="fas fa-seedling" style="margin-right:8px;"></i>Rural Wisdom
+      </div>
+      <div class="duality-arrow">⇄</div>
+      <div class="duality-pill urban">
+        <i class="fas fa-microchip" style="margin-right:8px;"></i>Urban Skills
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="openAuthModal()">
+        <i class="fas fa-fingerprint" style="margin-right:8px;"></i>Verify with Aadhaar
+      </button>
+      <button class="btn-ghost" onclick="scrollToAbout()">Learn More ↓</button>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-num">19,101</span>
+        <span class="stat-lbl">Rural Pin Codes</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num">2,10,111</span>
+        <span class="stat-lbl">Direct Jobs</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num">₹108</span>
+        <span class="stat-lbl">Monthly Access</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num">Zero</span>
+        <span class="stat-lbl">Corruption</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about-section" style="padding: 80px 40px; max-width: 900px; margin: 0 auto;">
+    <div style="text-align:center; margin-bottom: 60px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:4px; color:var(--gold); margin-bottom:16px; text-transform:uppercase;">What is BRIL?</div>
+      <h2 style="font-size: clamp(1.8rem,4vw,2.8rem); font-weight:800; margin-bottom:16px;">Two Crowds. One Exchange.<br>Real Skills. Real Money.</h2>
+      <p style="color:var(--text-mid); font-size:1.05rem; line-height:1.8; max-width:640px; margin:0 auto;">
+        BRIL is not charity. It is not just technology. It is a two-way knowledge highway — where rural India teaches sustainability, community and craft, and urban India teaches code, design and systems. Everyone learns. Everyone earns.
+      </p>
+    </div>
+
+    <div class="flow-line"></div>
+
+    <div class="grid-2" style="gap:28px; margin-bottom:48px;">
+      <div class="card" style="border-left: 4px solid var(--rural);">
+        <div style="color:var(--rural); font-family:'Syne',sans-serif; font-weight:800; margin-bottom:12px; font-size:1rem;">
+          <i class="fas fa-seedling" style="margin-right:8px;"></i>Rural → Urban
+        </div>
+        <p style="color:var(--text-mid); font-size:0.9rem; line-height:1.7;">Organic farming · Water management · Sustainable living · Handcraft & artisan skills · Community organizing · Medicinal plant knowledge · Local governance · Animal husbandry</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--urban);">
+        <div style="color:var(--urban); font-family:'Syne',sans-serif; font-weight:800; margin-bottom:12px; font-size:1rem;">
+          <i class="fas fa-microchip" style="margin-right:8px;"></i>Urban → Rural
+        </div>
+        <p style="color:var(--text-mid); font-size:0.9rem; line-height:1.7;">Web & app development · Data science · Digital marketing · Financial literacy · English communication · AI tools & automation · Design thinking · Remote work systems</p>
+      </div>
+    </div>
+
+    <div class="zero-grid" style="margin-bottom: 48px;">
+      <div class="zero-card">
+        <span class="zero-word">Paid</span>
+        <span class="zero-sub">Skills with ₹ Value</span>
+      </div>
+      <div class="zero-card">
+        <span class="zero-word">Volunteer</span>
+        <span class="zero-sub">Skills with Heart</span>
+      </div>
+      <div class="zero-card">
+        <span class="zero-word">Points</span>
+        <span class="zero-sub">BRIL Score System</span>
+      </div>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="btn-primary" onclick="openAuthModal()">
+        <i class="fas fa-fingerprint" style="margin-right:8px;"></i>Join the Exchange
+      </button>
+    </div>
+  </section>
+</div>
+
+<!-- =================== POST-AUTH APP =================== -->
+<div id="app-shell">
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-avatar">?</div>
+        <div class="user-name-s" id="sb-name">Loading...</div>
+        <span class="user-type-badge" id="sb-type-badge">—</span>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <ul class="sidebar-nav">
+        <li><a onclick="showPage('dashboard')" class="active" id="nav-dashboard">
+          <i class="fas fa-th-large"></i> Dashboard
+        </a></li>
+        <li><a onclick="showPage('skills')" id="nav-skills">
+          <i class="fas fa-exchange-alt"></i> Skill Exchange
+        </a></li>
+        <li><a onclick="showPage('evaluation')" id="nav-evaluation">
+          <i class="fas fa-brain"></i> Evaluation
+        </a></li>
+        <li><a onclick="showPage('profile')" id="nav-profile">
+          <i class="fas fa-user"></i> Profile
+        </a></li>
+      </ul>
+
+      <div class="sidebar-section-label">Platform</div>
+      <ul class="sidebar-nav">
+        <li><a onclick="showPage('foundation')" id="nav-foundation">
+          <i class="fas fa-landmark"></i> Foundation
+        </a></li>
+        <li><a onclick="showPaymentModal()">
+          <i class="fas fa-rupee-sign"></i> Subscription
+        </a></li>
+      </ul>
+
+      <div style="padding: 20px; margin-top:auto;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:var(--text-dim); letter-spacing:1.5px; text-align:center;">
+          BRIL v2.0<br>IPNOTEC ARCHITECTURE
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="section-page active" id="page-dashboard">
+        <div class="page-header">
+          <div class="page-title" id="dash-greeting">Welcome back</div>
+          <div class="page-sub" id="dash-sub">Your BRIL skill exchange hub</div>
+        </div>
+
+        <!-- Score Row -->
+        <div class="grid-4" style="margin-bottom:24px;">
+          <div class="stat-card">
+            <span class="stat-card-num" id="d-bril-score" style="color:var(--gold);">0</span>
+            <span class="stat-card-lbl">BRIL Score</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-num" id="d-skills-taught">0</span>
+            <span class="stat-card-lbl">Skills Taught</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-num" id="d-skills-learned">0</span>
+            <span class="stat-card-lbl">Skills Learned</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-num" id="d-earned" style="color:var(--green);">₹0</span>
+            <span class="stat-card-lbl">Total Earned</span>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:24px;">
+
+          <!-- Who You Are -->
+          <div class="card">
+            <div class="card-title">Your Identity</div>
+            <div style="display:flex; align-items:center; gap:20px;">
+              <div class="bril-score-ring" id="score-ring">
+                <div class="bril-score-inner">
+                  <span class="bril-score-num" id="ring-score">0</span>
+                  <span class="bril-score-lbl">SCORE</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-family:'Syne',sans-serif; font-weight:700; margin-bottom:6px;" id="d-persona">Unverified Member</div>
+                <div id="d-type-badge" style="margin-bottom:12px;"><span class="badge badge-orange">Unclassified</span></div>
+                <div style="font-size:0.82rem; color:var(--text-dim);" id="d-pincode-display">Pincode: —</div>
+                <div style="font-size:0.82rem; color:var(--text-dim);" id="d-district-display">District: —</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;">
+              <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:5px;">
+                <span>Evaluation Progress</span>
+                <span id="eval-progress-pct">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="eval-progress-bar" style="width:0%"></div>
+              </div>
+            </div>
+            <button onclick="showPage('evaluation')" class="btn-primary" style="width:100%; margin-top:16px; padding:10px;">
+              Start Evaluation →
+            </button>
+          </div>
+
+          <!-- Skill Suggestions -->
+          <div class="card">
+            <div class="card-title" id="skill-suggest-title">Suggested for You</div>
+            <div id="skill-suggestions">
+              <p style="color:var(--text-dim); font-size:0.88rem;">Complete evaluation to unlock personalized skill matches.</p>
+            </div>
+            <button onclick="showPage('skills')" class="btn-secondary" style="width:100%; margin-top:20px;">
+              Browse All Skills →
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-title">Recent Activity</div>
+          <div id="recent-activity">
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--gold);"></div>
+              <div>
+                <div style="font-size:0.9rem;">Joined BRIL platform · Aadhaar verified</div>
+                <div style="font-size:0.75rem; color:var(--text-dim); margin-top:3px; font-family:'JetBrains Mono',monospace;">Just now</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SKILL EXCHANGE ===== -->
+      <div class="section-page" id="page-skills">
+        <div class="page-header">
+          <div class="page-title">Skill Exchange</div>
+          <div class="page-sub">Teach what you know · Learn what you don't · Bridge two Indias</div>
+        </div>
+
+        <div class="flow-line"></div>
+
+        <!-- Filters -->
+        <div class="skill-filters">
+          <div class="filter-toggle" id="flow-toggle">
+            <button class="filter-toggle-btn active" onclick="setFlowFilter('all', this)">All</button>
+            <button class="filter-toggle-btn" onclick="setFlowFilter('rural-to-urban', this)" style="color:var(--rural);">Rural → Urban</button>
+            <button class="filter-toggle-btn" onclick="setFlowFilter('urban-to-rural', this)" style="color:var(--urban);">Urban → Rural</button>
+          </div>
+          <div class="filter-toggle" id="pay-toggle">
+            <button class="filter-toggle-btn active" onclick="setPayFilter('all', this)">All</button>
+            <button class="filter-toggle-btn" onclick="setPayFilter('paid', this)">Paid</button>
+            <button class="filter-toggle-btn" onclick="setPayFilter('volunteer', this)">Volunteer</button>
+          </div>
+          <select class="filter-select" id="cat-filter" onchange="renderSkills()">
+            <option value="all">All Categories</option>
+            <option value="tech">Technology</option>
+            <option value="craft">Craft & Artisan</option>
+            <option value="agri">Agriculture</option>
+            <option value="finance">Financial Literacy</option>
+            <option value="wellness">Wellness & Health</option>
+            <option value="language">Language</option>
+            <option value="sustainability">Sustainability</option>
+            <option value="creative">Creative & Design</option>
+          </select>
+          <select class="filter-select" id="hours-filter" onchange="renderSkills()">
+            <option value="all">Any Duration</option>
+            <option value="1">1–5 hrs/week</option>
+            <option value="5">5–10 hrs/week</option>
+            <option value="10">10+ hrs/week</option>
+          </select>
+          <input type="text" class="filter-select" id="skill-search" placeholder="Search skills…" oninput="renderSkills()" style="width:180px;">
+        </div>
+
+        <!-- Post/Offer Button -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:1.5px; color:var(--text-dim);">
+            <span id="skills-count">0</span> SKILLS AVAILABLE
+          </div>
+          <button class="btn-primary" onclick="openOfferSkillModal()" style="padding:10px 22px; font-size:0.78rem;">
+            <i class="fas fa-plus" style="margin-right:8px;"></i>Offer Your Skill
+          </button>
+        </div>
+
+        <div id="skills-list"></div>
+      </div>
+
+      <!-- ===== EVALUATION ===== -->
+      <div class="section-page" id="page-evaluation">
+        <div class="page-header">
+          <div class="page-title">BRIL Evaluation</div>
+          <div class="page-sub" id="eval-sub">108 questions · Urban & Rural knowledge · Earn your BRIL Score</div>
+        </div>
+
+        <div class="eval-tabs">
+          <button class="eval-tab active" onclick="setEvalTab('rural', this)">
+            <i class="fas fa-seedling" style="margin-right:6px; color:var(--rural);"></i>Rural Wisdom (36)
+          </button>
+          <button class="eval-tab" onclick="setEvalTab('urban', this)">
+            <i class="fas fa-city" style="margin-right:6px; color:var(--urban);"></i>Urban Skills (36)
+          </button>
+          <button class="eval-tab" onclick="setEvalTab('bridge', this)">
+            <i class="fas fa-bridge" style="margin-right:6px; color:var(--gold);"></i>Bridge Quiz (36)
+          </button>
+        </div>
+
+        <!-- Progress -->
+        <div style="margin-bottom:24px;">
+          <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:6px;">
+            <span style="color:var(--text-dim);">Overall Progress</span>
+            <span id="eval-overall-progress">0 / 108</span>
+          </div>
+          <div class="progress-track" style="height:8px;">
+            <div class="progress-fill" id="eval-overall-bar" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Question Display -->
+        <div id="question-area"></div>
+
+        <!-- Navigation -->
+        <div class="eval-footer">
+          <button class="btn-secondary" onclick="evalPrev()" id="eval-prev-btn" disabled>
+            <i class="fas fa-arrow-left" style="margin-right:8px;"></i>Previous
+          </button>
+          <div style="text-align:center;">
+            <div class="timer-box" id="eval-timer"><i class="fas fa-clock" style="margin-right:6px;"></i>00:00</div>
+            <div style="font-size:0.75rem; color:var(--text-dim); margin-top:6px; font-family:'JetBrains Mono',monospace;">
+              Q <span id="eval-q-num">1</span> of <span id="eval-q-total">12</span>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="evalNext()" id="eval-next-btn">
+            Next <i class="fas fa-arrow-right" style="margin-left:8px;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== PROFILE ===== -->
+      <div class="section-page" id="page-profile">
+        <div class="page-header">
+          <div class="page-title">My Profile</div>
+          <div class="page-sub">Your BRIL identity — verified, scored, skilled</div>
+        </div>
+
+        <div class="profile-header">
+          <div class="profile-avatar" id="prof-avatar">?</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; margin-bottom:6px;" id="prof-name">—</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+              <span class="badge badge-green"><i class="fas fa-check-circle" style="margin-right:4px;"></i>Aadhaar Verified</span>
+              <span class="badge" id="prof-type-badge">—</span>
+            </div>
+            <div style="color:var(--text-dim); font-size:0.88rem; font-family:'JetBrains Mono',monospace;" id="prof-email-display">—</div>
+            <div style="color:var(--text-dim); font-size:0.88rem; font-family:'JetBrains Mono',monospace; margin-top:3px;" id="prof-pincode-display">—</div>
+          </div>
+          <div style="margin-left:auto; text-align:right;">
+            <div style="font-family:'Syne',sans-serif; font-size:2.5rem; font-weight:800; color:var(--gold);" id="prof-score">0</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:2px; color:var(--text-dim);">BRIL SCORE</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="gap:20px; margin-bottom:20px;">
+          <div class="card">
+            <div class="card-title">Skills I Can Teach</div>
+            <div id="prof-teach-skills" style="min-height:60px;">
+              <p style="color:var(--text-dim); font-size:0.85rem;">Add skills you can teach to your profile.</p>
+            </div>
+            <button class="btn-secondary" onclick="openOfferSkillModal()" style="width:100%; margin-top:12px;">
+              + Add Skill
+            </button>
+          </div>
+          <div class="card">
+            <div class="card-title">Skills I'm Learning</div>
+            <div id="prof-learn-skills" style="min-height:60px;">
+              <p style="color:var(--text-dim); font-size:0.85rem;">Enroll in skills to track them here.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="gap:20px; margin-bottom:20px;">
+          <div class="card">
+            <div class="card-title">Evaluation Scores</div>
+            <div style="space-y:10px;">
+              <div style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:4px;">
+                  <span style="color:var(--rural);">Rural Wisdom</span>
+                  <span id="score-rural">0/36</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill" id="bar-rural" style="width:0%; background:var(--rural);"></div></div>
+              </div>
+              <div style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:4px;">
+                  <span style="color:var(--urban);">Urban Skills</span>
+                  <span id="score-urban">0/36</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill" id="bar-urban" style="width:0%; background:var(--urban);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:4px;">
+                  <span style="color:var(--gold);">Bridge Knowledge</span>
+                  <span id="score-bridge">0/36</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill" id="bar-bridge" style="width:0%; background:var(--gold);"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">@bhratha.dev Email</div>
+            <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:14px;">Your spam-free professional communication channel</p>
+            <div style="padding:12px; background:var(--black3); border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--orange);" id="prof-bhratha-email">—</div>
+            <div style="margin-top:12px; font-size:0.78rem; color:var(--text-dim);">
+              <i class="fas fa-check-circle" style="color:var(--green); margin-right:6px;"></i>All communications carry human accountability
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Subscription</div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="color:var(--green); font-weight:700; margin-bottom:4px;">Active · ₹108/month</div>
+              <div style="color:var(--text-dim); font-size:0.82rem;">Triple-zero accounting · 100% goes to BRIL Foundation</div>
+            </div>
+            <button class="btn-primary" onclick="showPaymentModal()" style="padding:10px 20px;">Manage</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== FOUNDATION ===== -->
+      <div class="section-page" id="page-foundation">
+        <div class="page-header">
+          <div class="page-title">BRIL Foundation</div>
+          <div class="page-sub">Section 8 Non-Profit · Triple-Zero Accounting · Madanapalle Flagship</div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom:28px;">
+          <div class="stat-card" style="border-top: 3px solid var(--gold);">
+            <span class="stat-card-num" style="color:var(--gold);">₹1.08Cr</span>
+            <span class="stat-card-lbl">Phase 1 Investment</span>
+          </div>
+          <div class="stat-card" style="border-top: 3px solid var(--rural);">
+            <span class="stat-card-num" style="color:var(--rural);">19,101</span>
+            <span class="stat-card-lbl">Rural Pin Codes</span>
+          </div>
+          <div class="stat-card" style="border-top: 3px solid var(--urban);">
+            <span class="stat-card-num" style="color:var(--urban);">2,10,111</span>
+            <span class="stat-card-lbl">Direct Jobs</span>
+          </div>
+        </div>
+
+        <div class="flow-line"></div>
+
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-title">Triple-Zero Accounting</div>
+          <p style="color:var(--text-mid); font-size:0.9rem; line-height:1.7; margin-bottom:20px;">
+            Every rupee that enters BRIL is tracked, transparent, and accounted for. No grey areas. No side channels. No leakage. Our mathematically verified system ensures complete fund integrity from donation to deployment.
+          </p>
+          <div class="zero-grid">
+            <div class="zero-card">
+              <span class="zero-word">Zero</span>
+              <span class="zero-sub">Corruption</span>
+            </div>
+            <div class="zero-card">
+              <span class="zero-word">Zero</span>
+              <span class="zero-sub">Leakage</span>
+            </div>
+            <div class="zero-card">
+              <span class="zero-word">Zero</span>
+              <span class="zero-sub">Ambiguity</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="gap:20px; margin-bottom:20px;">
+          <div class="card">
+            <div class="card-title">Database Auction</div>
+            <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:16px;">Bid for exclusive first access to fresh professional skill data — released every Monday at 10:01 AM</p>
+            <div style="font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; color:var(--gold); margin-bottom:8px;" id="current-bid">₹0</div>
+            <div style="font-size:0.78rem; color:var(--text-dim); margin-bottom:16px; font-family:'JetBrains Mono',monospace;">CURRENT HIGHEST BID</div>
+            <button class="btn-primary" onclick="openBidModal()" style="width:100%; padding:10px;">Place Bid</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Support the Foundation</div>
+            <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:16px;">Every donation builds a rural hub, equips a school, or trains a young person for a digital career.</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <button class="btn-secondary" onclick="openDonationModal(1000)" style="font-size:0.78rem;">₹1,000</button>
+              <button class="btn-secondary" onclick="openDonationModal(5000)" style="font-size:0.78rem;">₹5,000</button>
+              <button class="btn-secondary" onclick="openDonationModal(10000)" style="font-size:0.78rem;">₹10,000</button>
+              <button class="btn-secondary" onclick="openDonationModal()" style="font-size:0.78rem;">Custom</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- =================== AUTH MODAL =================== -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('auth-modal')">×</button>
+    <div class="modal-title">Join BRIL</div>
+    <div class="modal-sub">Aadhaar OTP verification · Pincode identity · Skill passport</div>
+
+    <!-- Step 1: Personal Info -->
+    <div id="auth-step-1">
+      <div class="aadhar-step">
+        <div class="aadhar-step-header">
+          <div class="step-num">1</div>
+          <div class="step-label">Aadhaar Identity Verification</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Aadhaar Number</label>
+          <input class="form-input" id="auth-aadhar" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="formatAadhar(this)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Full Name (as on Aadhaar)</label>
+          <input class="form-input" id="auth-name" placeholder="Your full legal name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mobile Number (Aadhaar linked)</label>
+          <input class="form-input" id="auth-phone" placeholder="+91 XXXXX XXXXX" maxlength="10" type="tel">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" id="auth-email" placeholder="your@email.com" type="email">
+        </div>
+      </div>
+
+      <div class="aadhar-step">
+        <div class="aadhar-step-header">
+          <div class="step-num">2</div>
+          <div class="step-label">Your Location Identity (Pincode)</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your Current Pincode <span style="color:var(--gold);">*Mandatory</span></label>
+          <input class="form-input" id="auth-pincode" placeholder="6-digit Pincode" maxlength="6" type="tel" oninput="detectPincode(this.value)">
+          <div class="pincode-result" id="pincode-result"></div>
+          <div style="font-size:0.78rem; color:var(--text-dim); margin-top:6px; font-style:italic;">
+            Your pincode determines your Rural/Urban profile — unlocking the right skills and questions for you.
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div class="check-row" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-label">I agree to the BRIL Time-Respecting Charter and Skill Exchange Code of Conduct</div>
+        </div>
+        <div class="check-row" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-label">I accept the New Tax Regime for skill income (Section 194J TDS applicable)</div>
+        </div>
+        <div class="check-row" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-label">I consent to Aadhaar-based identity verification under IT Act 2000</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="sendOTP()" style="width:100%;">
+        <i class="fas fa-mobile-alt" style="margin-right:8px;"></i>Send Aadhaar OTP
+      </button>
+    </div>
+
+    <!-- Step 2: OTP -->
+    <div id="auth-step-2" style="display:none;">
+      <div style="text-align:center; margin-bottom:24px;">
+        <div style="font-size:2rem; margin-bottom:12px;">📱</div>
+        <div style="font-family:'Syne',sans-serif; font-weight:700; margin-bottom:8px;">OTP Sent</div>
+        <div style="color:var(--text-dim); font-size:0.88rem;" id="otp-sent-to">Enter the 6-digit OTP sent to your Aadhaar-linked mobile</div>
+      </div>
+      <div class="otp-boxes" id="otp-boxes">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this, 0)" type="tel">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this, 1)" type="tel">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this, 2)" type="tel">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this, 3)" type="tel">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this, 4)" type="tel">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this, 5)" type="tel">
+      </div>
+      <div style="text-align:center; font-size:0.78rem; color:var(--text-dim); margin-bottom:20px; font-family:'JetBrains Mono',monospace;">
+        Demo OTP: 1 2 3 4 5 6
+      </div>
+      <button class="btn-primary" onclick="verifyOTP()" style="width:100%;">
+        <i class="fas fa-fingerprint" style="margin-right:8px;"></i>Verify & Enter BRIL
+      </button>
+      <button onclick="document.getElementById('auth-step-1').style.display='block'; document.getElementById('auth-step-2').style.display='none';" class="btn-ghost" style="width:100%; margin-top:10px;">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== OFFER SKILL MODAL =================== -->
+<div class="modal-overlay" id="offer-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('offer-modal')">×</button>
+    <div class="modal-title">Offer Your Skill</div>
+    <div class="modal-sub">Teach what you know · Set your own terms</div>
+
+    <div class="form-group">
+      <label class="form-label">Skill Name</label>
+      <input class="form-input" id="offer-title" placeholder="e.g. Organic Composting Techniques">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select class="form-input" id="offer-category">
+        <option value="tech">Technology</option>
+        <option value="craft">Craft & Artisan</option>
+        <option value="agri">Agriculture</option>
+        <option value="finance">Financial Literacy</option>
+        <option value="wellness">Wellness & Health</option>
+        <option value="language">Language</option>
+        <option value="sustainability">Sustainability</option>
+        <option value="creative">Creative & Design</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Direction</label>
+      <select class="form-input" id="offer-direction">
+        <option value="rural-to-urban">Rural → Urban (I'm teaching rural wisdom)</option>
+        <option value="urban-to-rural">Urban → Rural (I'm teaching urban skills)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-input" id="offer-desc" rows="3" placeholder="What will participants learn? What's your experience?"></textarea>
+    </div>
+    <div class="grid-2" style="gap:16px;">
+      <div class="form-group">
+        <label class="form-label">Type</label>
+        <select class="form-input" id="offer-type">
+          <option value="paid">Paid</option>
+          <option value="volunteer">Volunteer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hours per Week</label>
+        <select class="form-input" id="offer-hours">
+          <option value="2">2 hrs/week</option>
+          <option value="4">4 hrs/week</option>
+          <option value="6">6 hrs/week</option>
+          <option value="8">8 hrs/week</option>
+          <option value="12">12 hrs/week</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" id="offer-price-group">
+      <label class="form-label">Price per Hour (₹)</label>
+      <input class="form-input" id="offer-price" placeholder="e.g. 500" type="number" min="100">
+    </div>
+
+    <button class="btn-primary" onclick="submitSkill()" style="width:100%;">
+      <i class="fas fa-plus-circle" style="margin-right:8px;"></i>Post This Skill
+    </button>
+  </div>
+</div>
+
+<!-- =================== PAYMENT MODAL =================== -->
+<div class="modal-overlay" id="payment-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('payment-modal')">×</button>
+    <div class="modal-title">BRIL Subscription</div>
+    <div style="text-align:center; margin:24px 0;">
+      <div style="font-family:'Syne',sans-serif; font-size:3rem; font-weight:800; color:var(--green);">₹108</div>
+      <div style="color:var(--text-dim); margin-top:4px;">per month · All-access · Foundation supported</div>
+    </div>
+    <div style="padding:16px; background:var(--black3); border-radius:6px; margin-bottom:20px;">
+      <div style="font-size:0.85rem; line-height:1.8; color:var(--text-mid);">
+        ✓ Full Skill Exchange access<br>
+        ✓ @bhratha.dev email address<br>
+        ✓ BRIL Score & evaluation access<br>
+        ✓ Foundation contribution
+      </div>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--text-dim); text-align:center; margin-bottom:16px;">UPI ID: bhratha.dev@upi</div>
+    <button class="btn-primary" onclick="activateSubscription()" style="width:100%;">
+      <i class="fas fa-check-circle" style="margin-right:8px;"></i>Activate (Simulate)
+    </button>
+  </div>
+</div>
+
+<!-- =================== BID MODAL =================== -->
+<div class="modal-overlay" id="bid-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('bid-modal')">×</button>
+    <div class="modal-title">Database Auction</div>
+    <div class="modal-sub">Bid for exclusive Monday 10:01 AM data release</div>
+    <div class="form-group">
+      <label class="form-label">Your Bid Amount (₹)</label>
+      <input class="form-input" id="bid-amount" type="number" min="1000" placeholder="Minimum ₹1,000">
+    </div>
+    <button class="btn-primary" onclick="placeBid()" style="width:100%;">Place Bid</button>
+  </div>
+</div>
+
+<!-- =================== DONATION MODAL =================== -->
+<div class="modal-overlay" id="donation-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('donation-modal')">×</button>
+    <div class="modal-title">Support BRIL Foundation</div>
+    <div class="modal-sub">100% goes to rural hub infrastructure</div>
+    <div class="form-group">
+      <label class="form-label">Amount (₹)</label>
+      <input class="form-input" id="donation-amount" type="number" min="100" placeholder="Minimum ₹100">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Purpose</label>
+      <select class="form-input" id="donation-purpose">
+        <option value="hub">Rural Hub Infrastructure</option>
+        <option value="school">Paatashaala Education</option>
+        <option value="ev">EV Fleet Integration</option>
+        <option value="tech">IoT & Technology</option>
+        <option value="general">General Fund</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="processDonation()" style="width:100%;">Donate Now</button>
+  </div>
+</div>
+
+<!-- =================== TOAST =================== -->
+<div class="toast" id="toast">
+  <div class="toast-title" id="toast-title">Success</div>
+  <div class="toast-msg" id="toast-msg">Action completed.</div>
+</div>
+
+<!-- =================== JAVASCRIPT =================== -->
+<script>
+// =================== STATE ===================
+const state = {
+  authenticated: false,
+  user: null,
+  userType: null, // 'rural' or 'urban'
+  brilScore: 0,
+  evalScores: { rural: 0, urban: 0, bridge: 0 },
+  answeredQ: { rural: [], urban: [], bridge: [] },
+  currentEvalTab: 'rural',
+  currentQ: 0,
+  skillsTaught: [],
+  skillsLearned: [],
+  flowFilter: 'all',
+  payFilter: 'all',
+  bidAmount: 0,
+  timerInterval: null,
+  evalTimer: 0,
+  subscribed: false,
+  activities: []
+};
+
+// =================== RURAL PIN RANGES ===================
+// In reality, India's rural pincodes are complex. For demo,
+// we classify: pins starting with 5 (Andhra/Telangana - mixed),
+// specific ranges, etc. We'll use a smart heuristic.
+function classifyPincode(pin) {
+  if (pin.length !== 6) return null;
+  const p = parseInt(pin);
+  const first = parseInt(pin[0]);
+  // Known rural-heavy ranges (simplified for demo)
+  const ruralRanges = [
+    [515001, 515999], // Anantapur district (Andhra)
+    [516001, 516999], // Cuddapah (Andhra)
+    [517001, 517999], // Chittoor (Andhra)
+    [518001, 518999], // Kurnool (Andhra)
+    [523001, 523999], // Prakasam (Andhra)
+    [531001, 531999], // Visakhapatnam rural
+    [533001, 533999], // East Godavari rural
+    [518422, 518422], // Madanapalle (BRIL origin)
+    [827001, 827299], // Jharkhand rural
+    [845001, 845999], // Bihar rural
+    [441001, 441999], // Nagpur district rural
+    [785001, 785999], // Assam
+    [456001, 456999], // MP rural
+    [342001, 342999], // Jodhpur rural
+    [273001, 273999], // UP rural
+  ];
+
+  for (const [lo, hi] of ruralRanges) {
+    if (p >= lo && p <= hi) return 'rural';
+  }
+
+  // Urban metropolitan ranges
+  const urbanRanges = [
+    [400001, 400999], // Mumbai
+    [110001, 110999], // Delhi
+    [600001, 600999], // Chennai
+    [700001, 700999], // Kolkata
+    [500001, 500999], // Hyderabad
+    [560001, 560999], // Bangalore
+    [411001, 411999], // Pune
+    [380001, 380999], // Ahmedabad
+    [302001, 302999], // Jaipur
+    [226001, 226999], // Lucknow
+    [800001, 800999], // Patna
+    [682001, 682999], // Kochi
+  ];
+
+  for (const [lo, hi] of urbanRanges) {
+    if (p >= lo && p <= hi) return 'urban';
+  }
+
+  // Default: pins 1-3 often rural, 4-7 mixed, 5xx hyderabad-ap-telangana
+  if (first <= 3) return 'rural';
+  if (first === 1 || first === 4) return 'urban';
+  return 'rural'; // Default to rural for India (70%+ rural)
+}
+
+function detectPincode(val) {
+  const el = document.getElementById('pincode-result');
+  if (val.length === 6) {
+    const type = classifyPincode(val);
+    if (type === 'rural') {
+      el.style.display = 'block';
+      el.className = 'pincode-result pincode-rural';
+      el.innerHTML = '🌾 RURAL PINCODE DETECTED — You will be classified as a Rural Member';
+    } else {
+      el.style.display = 'block';
+      el.className = 'pincode-result pincode-urban';
+      el.innerHTML = '🏙️ URBAN PINCODE DETECTED — You will be classified as an Urban Member';
+    }
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+// =================== AUTH ===================
+function openAuthModal() { openModal('auth-modal'); }
+
+function formatAadhar(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,12);
+  el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+
+function otpInput(el, idx) {
+  if (el.value.length === 1) {
+    const boxes = document.querySelectorAll('.otp-box');
+    if (idx < 5) boxes[idx+1].focus();
+  }
+}
+
+function sendOTP() {
+  const aadhar = document.getElementById('auth-aadhar').value.replace(/\s/g,'');
+  const name   = document.getElementById('auth-name').value.trim();
+  const phone  = document.getElementById('auth-phone').value.trim();
+  const email  = document.getElementById('auth-email').value.trim();
+  const pin    = document.getElementById('auth-pincode').value.trim();
+
+  if (aadhar.length !== 12) { showToast('Error', 'Enter valid 12-digit Aadhaar number', 'error'); return; }
+  if (!name) { showToast('Error', 'Name is required', 'error'); return; }
+  if (phone.length < 10) { showToast('Error', 'Enter valid mobile number', 'error'); return; }
+  if (pin.length !== 6) { showToast('Error', 'Enter valid 6-digit pincode', 'error'); return; }
+
+  document.getElementById('auth-step-1').style.display = 'none';
+  document.getElementById('auth-step-2').style.display = 'block';
+  document.getElementById('otp-sent-to').textContent = `OTP sent to +91 ${phone.substring(0,5)}XXXXX`;
+  showToast('OTP Sent', `Aadhaar OTP sent to your registered mobile`, 'success');
+}
+
+function verifyOTP() {
+  const boxes = document.querySelectorAll('.otp-box');
+  const otp = Array.from(boxes).map(b => b.value).join('');
+
+  if (otp !== '123456') {
+    showToast('Invalid OTP', 'Enter demo OTP: 123456', 'error');
+    return;
+  }
+
+  const name  = document.getElementById('auth-name').value.trim();
+  const email = document.getElementById('auth-email').value.trim();
+  const pin   = document.getElementById('auth-pincode').value.trim();
+  const type  = classifyPincode(pin) || 'rural';
+
+  state.user = { name, email, pin, type, aadhar: document.getElementById('auth-aadhar').value };
+  state.userType = type;
+  state.authenticated = true;
+
+  closeModal('auth-modal');
+  activateApp();
+  showToast('Welcome to BRIL!', `Aadhaar verified · ${type.toUpperCase()} profile activated`, 'success');
+}
+
+function activateApp() {
+  document.getElementById('pre-auth').style.display = 'none';
+  document.getElementById('app-shell').style.display = 'block';
+  document.getElementById('auth-btn').style.display = 'none';
+  document.getElementById('logout-btn').style.display = 'block';
+
+  const u = state.user;
+  const initials = u.name.split(' ').map(n=>n[0]).join('').toUpperCase().substring(0,2);
+  const type = state.userType;
+
+  // Nav tag
+  const navTag = document.getElementById('user-type-nav');
+  navTag.textContent = type.toUpperCase();
+  navTag.className = `nav-tag ${type}-tag`;
+  navTag.style.display = 'inline-block';
+
+  // Sidebar
+  document.getElementById('sb-avatar').textContent = initials;
+  document.getElementById('sb-name').textContent = u.name;
+  const typeBadge = document.getElementById('sb-type-badge');
+  typeBadge.textContent = type.toUpperCase();
+  typeBadge.className = `user-type-badge ${type}-badge`;
+
+  // Dashboard
+  document.getElementById('dash-greeting').textContent = `Welcome, ${u.name.split(' ')[0]}`;
+  document.getElementById('dash-sub').textContent = `${type === 'rural' ? '🌾 Rural' : '🏙️ Urban'} Member · Pincode ${u.pin}`;
+
+  document.getElementById('d-persona').textContent = `${type === 'rural' ? 'Rural Wisdom Keeper' : 'Urban Skill Builder'}`;
+  document.getElementById('d-type-badge').innerHTML = `<span class="badge ${type === 'rural' ? 'badge-green' : 'badge-blue'}">${type.toUpperCase()} MEMBER</span>`;
+  document.getElementById('d-pincode-display').textContent = `Pincode: ${u.pin}`;
+  document.getElementById('d-district-display').textContent = `Profile: ${type === 'rural' ? 'Rural Exchange' : 'Urban Exchange'}`;
+
+  // Profile
+  document.getElementById('prof-avatar').textContent = initials;
+  document.getElementById('prof-name').textContent = u.name;
+  document.getElementById('prof-email-display').textContent = u.email;
+  document.getElementById('prof-pincode-display').textContent = `Pincode: ${u.pin} · ${type.toUpperCase()} member`;
+  document.getElementById('prof-bhratha-email').textContent = `${u.name.toLowerCase().replace(/\s+/g,'.')}@bhratha.dev`;
+  document.getElementById('prof-type-badge').textContent = type.toUpperCase();
+  document.getElementById('prof-type-badge').className = `badge ${type === 'rural' ? 'badge-green' : 'badge-blue'}`;
+
+  // Skill suggestions
+  renderSkillSuggestions();
+  renderSkills();
+  renderEvaluationQuestions('rural');
+
+  addActivity(`Joined as ${type} member · Aadhaar verified · Pincode ${u.pin}`);
+}
+
+function logout() {
+  state.authenticated = false;
+  state.user = null;
+  document.getElementById('pre-auth').style.display = 'block';
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('auth-btn').style.display = 'block';
+  document.getElementById('logout-btn').style.display = 'none';
+  document.getElementById('user-type-nav').style.display = 'none';
+  document.getElementById('auth-step-1').style.display = 'block';
+  document.getElementById('auth-step-2').style.display = 'none';
+}
+
+// =================== SKILL DATA ===================
+const SKILLS_DATA = [
+  // RURAL → URBAN
+  { id:1, title:'Organic Composting & Soil Science', direction:'rural-to-urban', category:'agri', type:'paid', hours:4, pricePerHour:400, desc:'Learn zero-waste composting techniques, soil pH management, and natural fertilizer creation from an experienced farmer with 20 years of practice.', teacher:'Ravi Kumar', location:'Madanapalle, AP', enrolled:34 },
+  { id:2, title:'Traditional Handloom Weaving', direction:'rural-to-urban', category:'craft', type:'paid', hours:6, pricePerHour:350, desc:'Master the ancient art of handloom — from warping to weaving patterns. Learn how rural artisans create ₹10,000+ sarees by hand.', teacher:'Meenakshi Devi', location:'Pochampally, Telangana', enrolled:18 },
+  { id:3, title:'Rainwater Harvesting Systems', direction:'rural-to-urban', category:'sustainability', type:'volunteer', hours:3, pricePerHour:0, desc:'Design and implement rainwater harvesting for homes and communities. A rural survival skill that urban areas urgently need.', teacher:'Suresh Naidu', location:'Anantapur, AP', enrolled:62 },
+  { id:4, title:'Medicinal Plant Knowledge', direction:'rural-to-urban', category:'wellness', type:'paid', hours:5, pricePerHour:300, desc:'Identify 50+ medicinal plants, their uses, cultivation, and how to create natural remedies. Centuries of tribal knowledge, now accessible.', teacher:'Lakshmi Bai', location:'Araku Valley, AP', enrolled:41 },
+  { id:5, title:'Community Decision Making (Gram Sabha)', direction:'rural-to-urban', category:'craft', type:'volunteer', hours:2, pricePerHour:0, desc:'Learn how Indian villages make collective decisions, resolve disputes, and build consensus — skills any urban team needs.', teacher:'Nageswar Rao', location:'Kakinada, AP', enrolled:27 },
+  { id:6, title:'Natural Beekeeping & Honey Production', direction:'rural-to-urban', category:'agri', type:'paid', hours:4, pricePerHour:450, desc:'Start a sustainable apiary. Learn queen rearing, natural honey extraction, and how to build a ₹50,000/month honey business.', teacher:'Gopal Reddy', location:'Chittoor, AP', enrolled:15 },
+  { id:7, title:'Traditional Pottery & Terracotta', direction:'rural-to-urban', category:'craft', type:'paid', hours:8, pricePerHour:280, desc:'Wheel throwing, hand building, and firing techniques passed through generations. Create art and functional pieces from raw clay.', teacher:'Mallamma', location:'Nizamabad, TG', enrolled:23 },
+  { id:8, title:'Sustainable Agriculture & Crop Rotation', direction:'rural-to-urban', category:'agri', type:'volunteer', hours:5, pricePerHour:0, desc:'Multi-crop farming systems that keep land productive for 100 years. Zero chemical input. Proven village techniques.', teacher:'Basavaiah', location:'Kurnool, AP', enrolled:55 },
+
+  // URBAN → RURAL
+  { id:9, title:'Basic Web Development (HTML/CSS/JS)', direction:'urban-to-rural', category:'tech', type:'paid', hours:6, pricePerHour:500, desc:'Build your village business website from scratch. No coding experience needed. Take your craft, honey, or produce business online.', teacher:'Priya Sharma', location:'Hyderabad (Remote)', enrolled:89 },
+  { id:10, title:'Digital Payments & UPI for Business', direction:'urban-to-rural', category:'finance', type:'volunteer', hours:2, pricePerHour:0, desc:'Accept payments without cash. Set up UPI, PhonePe, Google Pay for your small business. Learn QR codes and bank reconciliation.', teacher:'Arjun Menon', location:'Bangalore (Remote)', enrolled:134 },
+  { id:11, title:'Social Media Marketing for Artisans', direction:'urban-to-rural', category:'creative', type:'paid', hours:4, pricePerHour:600, desc:'Sell your handmade products to the world on Instagram, WhatsApp Business, and Meesho. Real case studies of village artisans earning ₹2L/month.', teacher:'Neha Gupta', location:'Mumbai (Remote)', enrolled:76 },
+  { id:12, title:'Data Entry & Excel for Village Records', direction:'urban-to-rural', category:'tech', type:'volunteer', hours:3, pricePerHour:0, desc:'Digitize your panchayat records, farm accounts, and cooperative data. Move from paper to spreadsheet forever.', teacher:'Rahul Verma', location:'Delhi (Remote)', enrolled:98 },
+  { id:13, title:'English Communication for Job Seekers', direction:'urban-to-rural', category:'language', type:'paid', hours:5, pricePerHour:400, desc:'Practical English for interviews, emails, and workplace communication. Specifically designed for rural youth entering urban job markets.', teacher:'Ananya Roy', location:'Kolkata (Remote)', enrolled:112 },
+  { id:14, title:'Financial Literacy & Savings Planning', direction:'urban-to-rural', category:'finance', type:'paid', hours:4, pricePerHour:350, desc:'Understand SBI accounts, post office savings, FDs, crop insurance, PM-KISAN, and how to make your money work for you.', teacher:'Vikram Nair', location:'Chennai (Remote)', enrolled:93 },
+  { id:15, title:'AI Tools for Small Business (ChatGPT, Canva)', direction:'urban-to-rural', category:'tech', type:'paid', hours:3, pricePerHour:700, desc:'Use AI to write business proposals, create product posters, and automate your WhatsApp Business — no expensive software needed.', teacher:'Kavitha Iyer', location:'Bangalore (Remote)', enrolled:45 },
+  { id:16, title:'Government Scheme Navigation (PM Schemes)', direction:'urban-to-rural', category:'finance', type:'volunteer', hours:2, pricePerHour:0, desc:'Navigate PM-KISAN, MGNREGS, Atal Pension, PMJDY, and 20+ other schemes. Know what you deserve and how to get it.', teacher:'Dinesh Pillai', location:'Thiruvananthapuram (Remote)', enrolled:178 },
+];
+
+// =================== RENDER SKILLS ===================
+function setFlowFilter(val, btn) {
+  state.flowFilter = val;
+  document.querySelectorAll('#flow-toggle .filter-toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSkills();
+}
+
+function setPayFilter(val, btn) {
+  state.payFilter = val;
+  document.querySelectorAll('#pay-toggle .filter-toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSkills();
+}
+
+function renderSkills() {
+  const catFilter   = document.getElementById('cat-filter').value;
+  const hoursFilter = document.getElementById('hours-filter').value;
+  const searchVal   = document.getElementById('skill-search').value.toLowerCase();
+
+  let filtered = SKILLS_DATA.filter(s => {
+    if (state.flowFilter !== 'all' && s.direction !== state.flowFilter) return false;
+    if (state.payFilter !== 'all' && s.type !== state.payFilter) return false;
+    if (catFilter !== 'all' && s.category !== catFilter) return false;
+    if (hoursFilter !== 'all') {
+      const h = parseInt(hoursFilter);
+      if (h === 1 && s.hours > 5) return false;
+      if (h === 5 && (s.hours < 5 || s.hours > 10)) return false;
+      if (h === 10 && s.hours <= 10) return false;
+    }
+    if (searchVal && !s.title.toLowerCase().includes(searchVal) && !s.desc.toLowerCase().includes(searchVal)) return false;
+    return true;
+  });
+
+  document.getElementById('skills-count').textContent = filtered.length;
+  document.getElementById('skills-list').innerHTML = filtered.map(s => skillCard(s)).join('') || 
+    '<div style="text-align:center; padding:40px; color:var(--text-dim);">No skills match your filters.</div>';
+}
+
+function skillCard(s) {
+  const isRural = s.direction === 'rural-to-urban';
+  const isPaid  = s.type === 'paid';
+  const dirColor = isRural ? 'var(--rural)' : 'var(--urban)';
+  const dirLabel = isRural ? '🌾 Rural → Urban' : '🏙️ Urban → Rural';
+  const price    = isPaid ? `₹${s.pricePerHour.toLocaleString('en-IN')}/hr` : 'Volunteer';
+  const totalCost = isPaid ? `₹${(s.pricePerHour * s.hours * 4).toLocaleString('en-IN')}/mo` : 'Free';
+
+  return `
+  <div class="skill-card ${s.direction} ${!isPaid ? 'volunteer-skill' : ''}">
+    <div class="skill-card-header">
+      <div>
+        <div class="skill-title">${s.title}</div>
+        <div class="skill-meta">
+          <span class="badge" style="background:${isRural ? 'rgba(61,166,74,0.1)' : 'rgba(46,134,255,0.1)'}; color:${dirColor}; border-color:${dirColor};">${dirLabel}</span>
+          <span class="badge ${isPaid ? 'badge-orange' : 'badge-gold'}">${isPaid ? 'PAID' : 'VOLUNTEER'}</span>
+          <span class="badge badge-gold">${s.category.toUpperCase()}</span>
+        </div>
+      </div>
+      <div style="text-align:right; flex-shrink:0; margin-left:16px;">
+        <div class="skill-price ${!isPaid ? 'volunteer' : ''}">${price}</div>
+        <div style="font-size:0.72rem; color:var(--text-dim); font-family:'JetBrains Mono',monospace;">${totalCost}</div>
+      </div>
+    </div>
+    <div class="skill-desc">${s.desc}</div>
+    <div class="skill-footer">
+      <div class="skill-info-row">
+        <div class="skill-info-item"><i class="fas fa-clock"></i>${s.hours} hrs/week</div>
+        <div class="skill-info-item"><i class="fas fa-users"></i>${s.enrolled} enrolled</div>
+        <div class="skill-info-item"><i class="fas fa-map-marker-alt"></i>${s.location}</div>
+      </div>
+      <button class="btn-primary" onclick="enrollSkill(${s.id})" style="padding:8px 18px; font-size:0.75rem;">
+        ${isPaid ? '<i class="fas fa-handshake" style="margin-right:6px;"></i>Enroll' : '<i class="fas fa-heart" style="margin-right:6px;"></i>Join Free'}
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderSkillSuggestions() {
+  if (!state.user) return;
+  const type = state.userType;
+  // Show 3 top skills relevant to user type
+  const relevant = SKILLS_DATA
+    .filter(s => type === 'rural' ? s.direction === 'urban-to-rural' : s.direction === 'rural-to-urban')
+    .slice(0, 3);
+
+  document.getElementById('skill-suggest-title').textContent =
+    type === 'rural' ? '🏙️ Urban Skills for You' : '🌾 Rural Wisdom for You';
+
+  document.getElementById('skill-suggestions').innerHTML = relevant.map(s => `
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-size:0.88rem; font-weight:600; margin-bottom:2px;">${s.title}</div>
+        <div style="font-size:0.75rem; color:var(--text-dim); font-family:'JetBrains Mono',monospace;">${s.type === 'paid' ? `₹${s.pricePerHour}/hr` : 'Free'} · ${s.hours}hrs/wk</div>
+      </div>
+      <button onclick="enrollSkill(${s.id})" style="font-size:0.72rem; padding:6px 12px;" class="btn-secondary">Enroll</button>
+    </div>
+  `).join('');
+}
+
+function enrollSkill(id) {
+  const skill = SKILLS_DATA.find(s => s.id === id);
+  if (!skill) return;
+  if (!state.skillsLearned.includes(id)) {
+    state.skillsLearned.push(id);
+    state.brilScore += 15;
+    state.user && addActivity(`Enrolled in: ${skill.title}`);
+    updateScoreDisplays();
+    document.getElementById('d-skills-learned').textContent = state.skillsLearned.length;
+    showToast('Enrolled!', `You joined "${skill.title}" — check Profile to track it`, 'success');
+    updateProfileSkills();
+  } else {
+    showToast('Already Enrolled', 'You are already in this skill session', 'success');
+  }
+}
+
+function updateProfileSkills() {
+  const learned = state.skillsLearned.map(id => SKILLS_DATA.find(s => s.id === id)).filter(Boolean);
+  document.getElementById('prof-learn-skills').innerHTML = learned.length
+    ? learned.map(s => `<span class="skill-tag">${s.title.substring(0,28)}…</span>`).join('')
+    : '<p style="color:var(--text-dim); font-size:0.85rem;">Enroll in skills to track them here.</p>';
+
+  const taught = state.skillsTaught;
+  document.getElementById('prof-teach-skills').innerHTML = taught.length
+    ? taught.map(s => `<span class="skill-tag" style="border-color:var(--orange); color:var(--orange);">${s.title.substring(0,28)}</span>`).join('')
+    : '<p style="color:var(--text-dim); font-size:0.85rem;">Add skills you can teach to your profile.</p>';
+}
+
+// =================== EVALUATION QUESTIONS ===================
+const EVAL_QUESTIONS = {
+  rural: [
+    { q:"Which crop is best suited for dry/drought-prone land?", opts:["Paddy","Jowar/Millet","Sugarcane","Potato"], ans:1 },
+    { q:"What is a 'Gram Sabha' in Indian village governance?", opts:["A village market","A village-level meeting of all adult voters","A local temple","A water body"], ans:1 },
+    { q:"Which natural method improves soil nitrogen content?", opts:["Pesticide spray","Burning stubble","Legume crop rotation","Deep ploughing"], ans:2 },
+    { q:"What does 'vermicomposting' produce?", opts:["Biogas","Rich organic fertilizer using earthworms","Pesticide","Rainwater"], ans:1 },
+    { q:"Which government scheme provides 100 days of rural work?", opts:["PM-KISAN","MGNREGS","PM-Awas","Atal Pension"], ans:1 },
+    { q:"What is the main purpose of a 'check dam' in rural India?", opts:["Generate electricity","Store drinking water","Water harvesting and groundwater recharge","Control floods in cities"], ans:2 },
+    { q:"Which traditional craft is Pochampally famous for?", opts:["Bronze casting","Ikat Handloom weaving","Stone carving","Leather work"], ans:1 },
+    { q:"What is 'Integrated Pest Management' (IPM)?", opts:["Using maximum pesticides","Using only organic methods exclusively","Combining multiple pest control methods to minimize chemical use","Burning crops affected by pests"], ans:2 },
+    { q:"Which animal byproduct is commonly used as organic fertilizer?", opts:["Feathers","Cow dung","Animal hide","Bone marrow"], ans:1 },
+    { q:"What is the Anganwadi Centre's primary function?", opts:["Agricultural training","Child nutrition, health, and early education","Village bank","Irrigation management"], ans:1 },
+    { q:"Which renewable energy source is most viable in rural India?", opts:["Nuclear","Tidal","Solar","Coal"], ans:2 },
+    { q:"What does SHG stand for in rural development?", opts:["State Health Group","Self Help Group","Soil Health Guild","Sustainable Hub Grid"], ans:1 },
+  ],
+  urban: [
+    { q:"What does 'API' stand for in software development?", opts:["Application Performance Index","Application Programming Interface","Automated Processing Input","Advanced Protocol Integration"], ans:1 },
+    { q:"Which Indian government portal allows e-filing of income tax?", opts:["MyGov","incometax.gov.in","DigiLocker","UMANG"], ans:1 },
+    { q:"What is the primary purpose of UPI in India?", opts:["Unified Policy Interface","Unified Payments Interface","Universal Purchase Interface","Urban Payment Initiative"], ans:1 },
+    { q:"Which skill is most essential for digital marketing?", opts:["SQL programming","Content creation and SEO understanding","Electrical engineering","Architecture design"], ans:1 },
+    { q:"What does 'responsive design' mean in web development?", opts:["Fast loading pages","Websites that work on all screen sizes","Animated websites","Secured websites"], ans:1 },
+    { q:"Which of these is a cloud storage service?", opts:["MS Paint","Google Drive","Windows Explorer","Notepad"], ans:1 },
+    { q:"What is the purpose of GST in India?", opts:["Goods and Services Tax — a single indirect tax system","Government Safety Tax","Green Sustainability Tax","General Service Tariff"], ans:0 },
+    { q:"Which certification is most recognized for project management?", opts:["FSSAI","PMP (Project Management Professional)","NABARD","NSE"], ans:1 },
+    { q:"What is 'data science' primarily used for?", opts:["Designing buildings","Extracting insights and predictions from large datasets","Writing legal documents","Physical science experiments"], ans:1 },
+    { q:"Which platform is best for professional networking in India?", opts:["Instagram","YouTube","LinkedIn","Snapchat"], ans:2 },
+    { q:"What does 'bootstrapping' mean for a startup?", opts:["Using government loans","Funding your own startup without external investment","Buying an existing business","Stock market listing"], ans:1 },
+    { q:"Which Indian law governs digital privacy and data protection?", opts:["IPC Section 420","IT Act 2000 & DPDP Act 2023","Companies Act 2013","CPC"], ans:1 },
+  ],
+  bridge: [
+    { q:"What would be the biggest challenge for a rural artisan selling online?", opts:["Too many customers","Digital payment setup and logistics","Weather conditions","Language only"], ans:1 },
+    { q:"How can IoT (Internet of Things) help a rural farmer?", opts:["Social media followers","Soil sensors, drip irrigation automation, weather alerts","Making videos","Online shopping"], ans:1 },
+    { q:"Which model best describes BRIL's approach?", opts:["City knowledge to villages only","Village knowledge to cities only","Two-way exchange of skills between rural and urban","Government scheme distribution"], ans:2 },
+    { q:"A rural woman earns ₹2,000/month selling handicrafts locally. With digital skills, she can reach:", opts:["Only her village","Only her district","Customers across India and globally","Only urban cities"], ans:2 },
+    { q:"What is the primary advantage of a 'rural hub' model?", opts:["Cheaper land only","Local jobs + digital access + skill training in one place","Only internet connectivity","Tourism boost"], ans:1 },
+    { q:"Which combination creates the most impact in rural India?", opts:["AI tools alone","Traditional knowledge + digital skills","Only government schemes","Urban migration"], ans:1 },
+    { q:"What does 'skill exchange' mean in BRIL's context?", opts:["Bartering physical goods","Teaching and learning across the rural-urban divide","Government exam certification","Corporate job placement"], ans:1 },
+    { q:"How does a pincode help BRIL classify members?", opts:["It determines salary","It identifies rural/urban location and tailors the platform experience","It verifies Aadhaar","It checks credit score"], ans:1 },
+    { q:"A software engineer spending a month in a rural hub would primarily gain:", opts:["Tax benefits","Corporate clients","Deep understanding of sustainability and community systems","Free accommodation only"], ans:2 },
+    { q:"What is the BRIL Foundation's 'Triple-Zero' principle?", opts:["Three zero-rupee schemes","Zero Corruption, Zero Leakage, Zero Ambiguity in fund management","Three branch offices","Zero rural members"], ans:1 },
+    { q:"What makes BRIL's ₹108/month subscription fee significant?", opts:["It's a lucky number","₹108 is auspicious in Indian culture — full access, full dignity, zero barrier","It's the minimum by law","It covers only meals"], ans:1 },
+    { q:"Which Indian city was chosen as BRIL's first hub location?", opts:["Hyderabad","Bengaluru","Madanapalle, Andhra Pradesh","Visakhapatnam"], ans:2 },
+  ]
+};
+
+let currentEvalTab = 'rural';
+let currentQIndex  = 0;
+let evalTimerInterval;
+
+function setEvalTab(tab, btn) {
+  currentEvalTab = tab;
+  currentQIndex  = 0;
+  document.querySelectorAll('.eval-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEvaluationQuestions(tab);
+}
+
+function renderEvaluationQuestions(tab) {
+  const questions = EVAL_QUESTIONS[tab];
+  const q = questions[currentQIndex];
+
+  document.getElementById('eval-q-num').textContent = currentQIndex + 1;
+  document.getElementById('eval-q-total').textContent = questions.length;
+
+  const answered = state.answeredQ[tab];
+
+  document.getElementById('question-area').innerHTML = `
+    <div class="card" style="border-left: 4px solid ${tab === 'rural' ? 'var(--rural)' : tab === 'urban' ? 'var(--urban)' : 'var(--gold)'};">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:2px; color:var(--text-dim); margin-bottom:14px;">
+        ${tab === 'rural' ? '🌾 RURAL WISDOM' : tab === 'urban' ? '🏙️ URBAN SKILLS' : '🌉 BRIDGE KNOWLEDGE'} · Q${currentQIndex + 1}
+      </div>
+      <div class="q-text" style="font-size:1.05rem; font-weight:600;">${q.q}</div>
+      <div class="q-options">
+        ${q.opts.map((opt, i) => `
+          <div class="q-option ${answered[currentQIndex] === i ? (i === q.ans ? 'selected-opt' : 'selected-opt') : ''}" 
+               onclick="selectAnswer(${i})" 
+               id="opt-${i}"
+               style="${answered[currentQIndex] !== undefined ? (i === q.ans ? 'border-color:var(--green); color:var(--green);' : answered[currentQIndex] === i ? 'border-color:var(--orange); color:var(--orange);' : '') : ''}">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; margin-right:8px; opacity:0.5;">${String.fromCharCode(65+i)}.</span>${opt}
+          </div>
+        `).join('')}
+      </div>
+      ${answered[currentQIndex] !== undefined ? `
+        <div style="margin-top:14px; padding:12px; border-radius:4px; background:${answered[currentQIndex] === q.ans ? 'rgba(29,185,84,0.1)' : 'rgba(232,99,10,0.1)'}; border:1px solid ${answered[currentQIndex] === q.ans ? 'rgba(29,185,84,0.3)' : 'rgba(232,99,10,0.3)'};">
+          <div style="font-size:0.82rem; color:${answered[currentQIndex] === q.ans ? 'var(--green)' : 'var(--orange)'}; font-family:'Syne',sans-serif; font-weight:700;">
+            ${answered[currentQIndex] === q.ans ? '✓ Correct! +10 BRIL Points' : `✗ Incorrect · Correct answer: ${q.opts[q.ans]}`}
+          </div>
+        </div>` : ''}
+    </div>
+  `;
+
+  document.getElementById('eval-prev-btn').disabled = currentQIndex === 0;
+  document.getElementById('eval-next-btn').textContent = currentQIndex === questions.length - 1 ? 'Submit Tab' : 'Next →';
+
+  // Restart timer
+  clearInterval(evalTimerInterval);
+  state.evalTimer = 0;
+  evalTimerInterval = setInterval(() => {
+    state.evalTimer++;
+    const m = Math.floor(state.evalTimer / 60).toString().padStart(2,'0');
+    const s = (state.evalTimer % 60).toString().padStart(2,'0');
+    const el = document.getElementById('eval-timer');
+    if (el) el.innerHTML = `<i class="fas fa-clock" style="margin-right:6px;"></i>${m}:${s}`;
+  }, 1000);
+
+  updateEvalProgress();
+}
+
+function selectAnswer(optIdx) {
+  const q = EVAL_QUESTIONS[currentEvalTab][currentQIndex];
+  if (state.answeredQ[currentEvalTab][currentQIndex] !== undefined) return; // already answered
+
+  state.answeredQ[currentEvalTab][currentQIndex] = optIdx;
+
+  if (optIdx === q.ans) {
+    state.evalScores[currentEvalTab]++;
+    state.brilScore += 10;
+    updateScoreDisplays();
+  }
+
+  // Re-render to show result
+  renderEvaluationQuestions(currentEvalTab);
+}
+
+function evalNext() {
+  const questions = EVAL_QUESTIONS[currentEvalTab];
+  if (currentQIndex < questions.length - 1) {
+    currentQIndex++;
+    renderEvaluationQuestions(currentEvalTab);
+  } else {
+    showToast('Tab Complete!', `${currentEvalTab.toUpperCase()} evaluation done · Score: ${state.evalScores[currentEvalTab]}/${questions.length}`, 'success');
+    addActivity(`Completed ${currentEvalTab} evaluation · ${state.evalScores[currentEvalTab]}/${questions.length} correct`);
+    updateProfileScores();
+  }
+}
+
+function evalPrev() {
+  if (currentQIndex > 0) {
+    currentQIndex--;
+    renderEvaluationQuestions(currentEvalTab);
+  }
+}
+
+function updateEvalProgress() {
+  const total   = 36;
+  const answered = Object.values(state.answeredQ).reduce((a,b) => a + b.length, 0);
+  const pct     = Math.round((answered / 108) * 100);
+
+  document.getElementById('eval-overall-progress').textContent = `${answered} / 108`;
+  document.getElementById('eval-overall-bar').style.width = pct + '%';
+  document.getElementById('eval-progress-pct').textContent = pct + '%';
+  document.getElementById('eval-progress-bar').style.width = pct + '%';
+}
+
+function updateScoreDisplays() {
+  document.getElementById('d-bril-score').textContent = state.brilScore;
+  document.getElementById('ring-score').textContent   = state.brilScore;
+  document.getElementById('prof-score').textContent   = state.brilScore;
+  document.getElementById('d-earned').textContent     = `₹${(state.brilScore * 8).toLocaleString('en-IN')}`;
+
+  // Update ring
+  const pct = Math.min(state.brilScore / 500 * 360, 360);
+  document.getElementById('score-ring').style.background =
+    `conic-gradient(var(--orange) 0deg, var(--green) ${pct}deg, var(--border) ${pct}deg)`;
+}
+
+function updateProfileScores() {
+  const r = state.evalScores.rural;
+  const u = state.evalScores.urban;
+  const b = state.evalScores.bridge;
+
+  document.getElementById('score-rural').textContent  = `${r}/12`;
+  document.getElementById('score-urban').textContent  = `${u}/12`;
+  document.getElementById('score-bridge').textContent = `${b}/12`;
+  document.getElementById('bar-rural').style.width    = (r/12*100) + '%';
+  document.getElementById('bar-urban').style.width    = (u/12*100) + '%';
+  document.getElementById('bar-bridge').style.width   = (b/12*100) + '%';
+}
+
+// =================== SKILL OFFER ===================
+function openOfferSkillModal() {
+  if (!state.authenticated) { showToast('Login Required', 'Please verify with Aadhaar first', 'error'); return; }
+  openModal('offer-modal');
+
+  // Auto-set direction based on user type
+  const dir = state.userType === 'rural' ? 'rural-to-urban' : 'urban-to-rural';
+  document.getElementById('offer-direction').value = dir;
+
+  document.getElementById('offer-type').onchange = function() {
+    document.getElementById('offer-price-group').style.display = this.value === 'paid' ? 'block' : 'none';
+  };
+}
+
+function submitSkill() {
+  const title  = document.getElementById('offer-title').value.trim();
+  const cat    = document.getElementById('offer-category').value;
+  const dir    = document.getElementById('offer-direction').value;
+  const desc   = document.getElementById('offer-desc').value.trim();
+  const type   = document.getElementById('offer-type').value;
+  const hours  = parseInt(document.getElementById('offer-hours').value);
+  const price  = parseInt(document.getElementById('offer-price').value) || 0;
+
+  if (!title || !desc) { showToast('Error', 'Please fill in Skill Name and Description', 'error'); return; }
+
+  const newSkill = { id: Date.now(), title, category:cat, direction:dir, type, hours, pricePerHour:price, desc, teacher: state.user.name, location: `${state.user.pin} Area`, enrolled: 0 };
+  SKILLS_DATA.unshift(newSkill);
+  state.skillsTaught.push(newSkill);
+  state.brilScore += 25;
+  updateScoreDisplays();
+  document.getElementById('d-skills-taught').textContent = state.skillsTaught.length;
+  addActivity(`Posted skill: ${title}`);
+  updateProfileSkills();
+  closeModal('offer-modal');
+  renderSkills();
+  showToast('Skill Posted!', `"${title}" is now live on the exchange · +25 BRIL Points`, 'success');
+}
+
+// =================== PAYMENT ===================
+function showPaymentModal() {
+  if (!state.authenticated) { showToast('Login Required', 'Please verify with Aadhaar first', 'error'); return; }
+  openModal('payment-modal');
+}
+
+function activateSubscription() {
+  state.subscribed = true;
+  state.brilScore += 50;
+  updateScoreDisplays();
+  addActivity('Subscription activated · ₹108/month');
+  closeModal('payment-modal');
+  showToast('Subscribed!', 'BRIL subscription active · ₹108/month · Triple-zero accounted', 'success');
+}
+
+// =================== FOUNDATION ===================
+function openBidModal() { openModal('bid-modal'); }
+function openDonationModal(amount) {
+  openModal('donation-modal');
+  if (amount) document.getElementById('donation-amount').value = amount;
+}
+
+function placeBid() {
+  const amount = parseInt(document.getElementById('bid-amount').value);
+  if (!amount || amount < 1000) { showToast('Error', 'Minimum bid is ₹1,000', 'error'); return; }
+  state.bidAmount = amount;
+  document.getElementById('current-bid').textContent = `₹${amount.toLocaleString('en-IN')}`;
+  addActivity(`Placed auction bid: ₹${amount.toLocaleString('en-IN')}`);
+  closeModal('bid-modal');
+  showToast('Bid Placed', `Your bid of ₹${amount.toLocaleString('en-IN')} is recorded for Monday 10:01 AM release`, 'success');
+}
+
+function processDonation() {
+  const amount  = parseInt(document.getElementById('donation-amount').value);
+  const purpose = document.getElementById('donation-purpose').value;
+  if (!amount || amount < 100) { showToast('Error', 'Minimum donation is ₹100', 'error'); return; }
+  addActivity(`Donated ₹${amount.toLocaleString('en-IN')} to ${purpose} fund`);
+  closeModal('donation-modal');
+  showToast('Thank you!', `₹${amount.toLocaleString('en-IN')} donated to BRIL Foundation · Triple-zero accounted`, 'success');
+}
+
+// =================== ACTIVITY ===================
+function addActivity(text) {
+  state.activities.unshift({ text, time: new Date() });
+  renderActivity();
+}
+
+function renderActivity() {
+  const container = document.getElementById('recent-activity');
+  if (!container) return;
+  const items = state.activities.slice(0, 6);
+  container.innerHTML = items.map((a, i) => `
+    <div class="activity-item">
+      <div class="activity-dot" style="background:${i === 0 ? 'var(--orange)' : 'var(--border)'};"></div>
+      <div>
+        <div style="font-size:0.9rem;">${a.text}</div>
+        <div style="font-size:0.75rem; color:var(--text-dim); margin-top:3px; font-family:'JetBrains Mono',monospace;">${timeAgo(a.time)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function timeAgo(date) {
+  const diff = (new Date() - date) / 1000;
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  return `${Math.floor(diff/3600)}h ago`;
+}
+
+// =================== NAVIGATION ===================
+function showPage(id) {
+  document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(`page-${id}`).classList.add('active');
+  const navEl = document.getElementById(`nav-${id}`);
+  if (navEl) navEl.classList.add('active');
+
+  if (id === 'skills') renderSkills();
+  if (id === 'profile') { updateProfileScores(); updateProfileSkills(); }
+}
+
+// =================== MODAL HELPERS ===================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// =================== TOAST ===================
+function showToast(title, msg, type='success') {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-msg').textContent   = msg;
+  toast.style.borderColor = type === 'error' ? 'var(--orange)' : 'var(--green)';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// =================== CHECKBOX ===================
+function toggleCheck(row) {
+  row.querySelector('.check-box').classList.toggle('checked');
+}
+
+// =================== SCROLL ===================
+function scrollToAbout() {
+  document.getElementById('about-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+// =================== NAV SCROLL ===================
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('nav-scrolled', window.scrollY > 20);
+});
+
+// =================== INIT ===================
+window.addEventListener('DOMContentLoaded', () => {
+  // Initialize empty arrays for answered questions
+  state.answeredQ = { rural: [], urban: [], bridge: [] };
+});
+</script>
+</body>
+</html>
